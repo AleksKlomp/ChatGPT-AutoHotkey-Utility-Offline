@@ -9,12 +9,12 @@ Script Tray Menu
 ====================================================
 */
 
-TraySetIcon("Icon.ico")
+TraySetIcon("icon.ico")
 A_TrayMenu.Delete
 A_TrayMenu.Add("&Debug", Debug)
 A_TrayMenu.Add("&Reload Script", ReloadScript)
 A_TrayMenu.Add("E&xit", Exit)
-A_IconTip := "ChatGPT AutoHotkey Utility"
+A_IconTip := "LM Studio AutoHotkey Utility"
 
 ReloadScript(*) {
 	Reload
@@ -47,11 +47,16 @@ Variables
 ====================================================
 */
 
-API_Key := "Your_API_Key_Here"
-API_URL := "https://api.openai.com/v1/chat/completions"
+API_Key := "lm-studio" ; Note: Future LM Studio updates might change this!
+API_URL := "http://localhost:1234/v1/chat/completions" ; Same as above
+OpenAI_API_Key := "Your_API_Key_Here" ; Paste your OpenAI API key on the OpenAI_API_Key variable
+OpenAI_API_URL := "https://api.openai.com/v1/chat/completions"
 Status_Message := ""
 Response_Window_Status := "Closed"
 Retry_Status := ""
+global AutoPasteEnabled := false
+global UseOpenAIAPI := false
+global AutoCopyEnabled := false
 
 /*
 ====================================================
@@ -71,49 +76,49 @@ MenuPopup.Add("&7 - Translate to English", TranslateToEnglish)
 
 Rephrase(*) {
     ChatGPT_Prompt := "Rephrase the following text or paragraph to ensure clarity, conciseness, and a natural flow. The revision should preserve the tone, style, and formatting of the original text. Additionally, correct any grammar and spelling errors you come across:"
-    Status_Message := "Rephrasing..."
+    Status_Message := "Rephrasing... ⏳"
     API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 Summarize(*) {
     ChatGPT_Prompt := "Summarize the following:"
-    Status_Message := "Summarizing..."
+    Status_Message := "Summarizing... ⏳"
     API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 Explain(*) {
     ChatGPT_Prompt := "Explain the following:"
-    Status_Message := "Explaining..."
-    API_Model := "gpt-3.5-turbo"
+    Status_Message := "Explaining... ⏳"
+    API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 Expand(*) {
     ChatGPT_Prompt := "Considering the original tone, style, and formatting, please help me express the following idea in a clearer and more articulate way. The style of the message could be formal, informal, casual, empathetic, assertive, or persuasive, depending on the context of the original message. The text should be divided into paragraphs for readability. No specific language complexities need to be avoided and the focus should be equally distributed throughout the message. There's no set minimum or maximum length. Here's what I'm trying to say:"
-    Status_Message := "Expanding..."
+    Status_Message := "Expanding... ⏳"
     API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 GenerateReply(*) {
     ChatGPT_Prompt := "Craft a response to any given message. The response should adhere to the original sender's tone, style, formatting, and cultural or regional context. Maintain the same level of formality and emotional tone as the original message. Responses may be of any length, provided they effectively communicate the response to the original sender:"
-    Status_Message := "Generating reply..."
+    Status_Message := "Generating reply... ⏳"
     API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 FindActionItems(*) {
     ChatGPT_Prompt := "Find action items that needs to be done and present them in a list:"
-    Status_Message := "Finding action items..."
-    API_Model := "gpt-3.5-turbo"
+    Status_Message := "Finding action items... ⏳"
+    API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
 
 TranslateToEnglish(*) {
     ChatGPT_Prompt := "Generate an English translation for the following text or paragraph, ensuring the translation accurately conveys the intended meaning or idea without excessive deviation. The translation should preserve the tone, style, and formatting of the original text:"
-    Status_Message := "Translating to English..."
+    Status_Message := "Translating to English... ⏳"
     API_Model := "gpt-4"
     ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status)
 }
@@ -124,19 +129,28 @@ Create Response Window
 ====================================================
 */
 
-Response_Window := Gui("-Caption", "Response")
+Response_Window := Gui(, "LM Studio AutoHotkey Utility")
 Response_Window.BackColor := "0x333333"
-Response_Window.SetFont("s13 cWhite", "Georgia")
-Response := Response_Window.Add("Edit", "r20 ReadOnly w600 Wrap Background333333", Status_Message)
-RetryButton := Response_Window.Add("Button", "x190 Disabled", "Retry")
+Response_Window.SetFont("s13 cWhite", "Consolas")
+
+Response := Response_Window.Add("Edit", "r20 ReadOnly w700 Wrap Background333333", Status_Message)
+UseOpenAICheckbox := Response_Window.Add("Checkbox", "x+10 vUseOpenAI", "OpenAI API")
+UseOpenAICheckbox.OnEvent("Click", ToggleAPI)
+RetryButton := Response_Window.Add("Button", "y+10 w110 Disabled", "🔄 Retry")
 RetryButton.OnEvent("Click", Retry)
-CopyButton := Response_Window.Add("Button", "x+30 w80 Disabled", "Copy")
+CopyButton := Response_Window.Add("Button", "y+10 w110 Disabled", "📋 Copy")
 CopyButton.OnEvent("Click", Copy)
-Response_Window.Add("Button", "x+30", "Close").OnEvent("Click", Close)
+AutoCopyCheckbox := Response_Window.Add("Checkbox", "y+10 vAutoCopy", "Auto-copy")
+AutoCopyCheckbox.OnEvent("Click", ToggleAutoCopy)
+AutoPasteCheckbox := Response_Window.Add("Checkbox", "y+10 vAutoPaste", "Auto-paste")
+AutoPasteCheckbox.OnEvent("Click", ToggleAutoPaste)
+
+Response_Window.Opt("+LastFound")
+WinSetStyle("-0xC00000", "A")
 
 /*
 ====================================================
-Buttons
+Buttons and Toggles
 ====================================================
 */
 
@@ -144,26 +158,47 @@ Retry(*) {
     Retry_Status := "Retry"
     RetryButton.Enabled := 0
     CopyButton.Enabled := 0
-    CopyButton.Text := "Copy"
+    CopyButton.Text := "📋 Copy"
     ProcessRequest(Previous_ChatGPT_Prompt, Previous_Status_Message, Previous_API_Model, Retry_Status)
 }
 
 Copy(*) {
     A_Clipboard := Response.Value
     CopyButton.Enabled := 0
-    CopyButton.Text := "Copied!"
+    CopyButton.Text := "✅ Copied"
 
     DllCall("SetFocus", "Ptr", 0)
     Sleep 2000
 
     CopyButton.Enabled := 1
-    CopyButton.Text := "Copy"
+    CopyButton.Text := "📋 Copy"
 }
 
 Close(*) {
     HTTP_Request.Abort
     Response_Window.Hide
     global Response_Window_Status := "Closed"
+}
+
+ToggleAutoPaste(*) {
+    global AutoPasteEnabled
+    AutoPasteEnabled := !AutoPasteEnabled
+}
+
+ToggleAutoCopy(*) {
+    global AutoCopyEnabled
+    AutoCopyEnabled := !AutoCopyEnabled
+}
+
+ToggleAPI(*) {
+    global API_URL, API_Key
+    if (UseOpenAICheckbox.Value) {
+        API_URL := OpenAI_API_URL
+        API_Key := OpenAI_API_Key
+    } else {
+        API_URL := "http://localhost:1234/v1/chat/completions" ; Note: Future LM Studio updates might change this!
+        API_Key := "lm-studio" ; Same as above
+    }
 }
 
 /*
@@ -182,9 +217,9 @@ ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status) {
         }
         CopiedText := A_Clipboard
         ChatGPT_Prompt := ChatGPT_Prompt "`n`n" CopiedText
-        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, '(\\|")+', '\$1') ; Clean back spaces and quotes
-        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, "`n", "\n") ; Clean newlines
-        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, "`r", "") ; Remove carriage returns
+        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, '(\\|")+', '\$1')
+        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, "`n", "\n")
+        ChatGPT_Prompt := RegExReplace(ChatGPT_Prompt, "`r", "")
         global Previous_ChatGPT_Prompt := ChatGPT_Prompt
         global Previous_Status_Message := Status_Message
         global Previous_API_Model := API_Model
@@ -207,7 +242,7 @@ ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status) {
     HTTP_Request.SetRequestHeader("Authorization", "Bearer " API_Key)
     Messages := '{ "role": "user", "content": "' ChatGPT_Prompt '" }'
     JSON_Request := '{ "model": "' API_Model '", "messages": [' Messages '] }'
-    HTTP_Request.SetTimeouts(60000, 60000, 60000, 60000)
+    HTTP_Request.SetTimeouts(300000, 300000, 300000, 300000) ; 300000 milliseconds = 5 minutes. Adjust accordingly depending on your hardware and loaded LLM!
     HTTP_Request.Send(JSON_Request)
     SetTimer LoadingCursor, 1
     if WinExist("Response") {
@@ -228,11 +263,18 @@ ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status) {
 
             SetTimer LoadingCursor, 0
             OnMessage 0x200, WM_MOUSEHOVER, 0
-            Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32512) ; Arrow cursor
+            Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32512)
             DllCall("SetCursor", "UPtr", Cursor)
 
             Response_Window.Flash()
             DllCall("SetFocus", "Ptr", 0)
+
+            if (AutoPasteEnabled) {
+                A_Clipboard := JSON_Response
+                SendInput "^v"
+            } else if (AutoCopyEnabled) {
+                A_Clipboard := JSON_Response
+            }
         } else {
             RetryButton.Enabled := 1
             CopyButton.Enabled := 1
@@ -240,7 +282,7 @@ ProcessRequest(ChatGPT_Prompt, Status_Message, API_Model, Retry_Status) {
 
             SetTimer LoadingCursor, 0
             OnMessage 0x200, WM_MOUSEHOVER, 0
-            Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32512) ; Arrow cursor
+            Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32512)
             DllCall("SetCursor", "UPtr", Cursor)
 
             Response_Window.Flash()
@@ -256,7 +298,7 @@ Cursors
 */
 
 WM_MOUSEHOVER(*) {
-    Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32648) ; Unavailable cursor
+    Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32648)
     MouseGetPos ,,, &MousePosition
     if (CopyButton.Enabled = 0) & (MousePosition = "Button2") {
         DllCall("SetCursor", "UPtr", Cursor)
@@ -268,7 +310,7 @@ WM_MOUSEHOVER(*) {
 LoadingCursor() {
     MouseGetPos ,,, &MousePosition
     if (MousePosition = "Edit1") {
-        Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32514) ; Loading cursor
+        Cursor := DllCall("LoadCursor", "uint", 0, "uint", 32514)
         DllCall("SetCursor", "UPtr", Cursor)
     }
 }
