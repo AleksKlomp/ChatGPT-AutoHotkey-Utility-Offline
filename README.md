@@ -1,8 +1,8 @@
-# ChatGPT-AutoHotkey-Utility
+# ChatGPT-AutoHotkey-Utility-Offline
 
-[⏬ Download here](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/releases/latest)
+[⏬ Download here](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/releases/latest)
 
-An AutoHotkey script that uses the ChatGPT API to process selected text.
+An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, a program that enables you to run LLMs on your laptop, entirely offline. Process text using various language models through an OpenAI compatible local server that you can connect to without internet!
 
 ![image](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/e5076d79-26ad-4680-83ee-032a6a805d40)
 
@@ -11,9 +11,13 @@ An AutoHotkey script that uses the ChatGPT API to process selected text.
 ## How to use
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/). Note that this script will not work on earlier versions of AutoHotkey.
-2. Copy your OpenAI API key [here](https://platform.openai.com/account/api-keys) (you may need to create a new secret key‍)
-3. Open `ChatGPT AutoHotkey Utility.ahk` using your favorite text editor
-4. Paste your OpenAI API key on the `API_Key` variable
+2. Install [LM Studio for Windows](https://lmstudio.ai/).
+3. "Search" for any compatible model files that you can download in the app (e.g. lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF)
+4. Click on "Local Server" and "Select a model to load". (The server should now begin running on port 1234)
+   
+6. OPTIONAL: Copy your OpenAI API key [here](https://platform.openai.com/account/api-keys) (you may need to create a new secret key‍). Note that this is not needed if you do not intend to use ChatGPT.
+7. OPTIONAL: Open `ChatGPT AutoHotkey Utility.ahk` using your favorite text editor
+8. OPTIONAL: Paste your OpenAI API key on the `API_Key` variable
 
 ![image](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/a77d1a7d-628b-4155-83ba-2b5569442a50)
 
@@ -73,4 +77,4 @@ You can change the activation hotkey under Hotkey. See [here](https://www.autoho
 
 - [AutoHotkey-JSON](https://github.com/cocobelgica/AutoHotkey-JSON) library
 - [ai-tools-ahk](https://github.com/ecornell/ai-tools-ahk) for the inspiration
-- [Icons8](https://icons8.com/icon/kTuxVYRKeKEY/chatgpt) for the icon
+- [Microsoft Copilot](https://www.bing.com/images/create/extremely-simple-graphic-of-the-writing-hand-emoji/1-667c7f1955cd40c68f0fc7032f3efaa5?id=twRLOcxSHp1iYCRcMv4ufw%3d%3d&view=detailv2&idpp=genimg&idpclose=1&thId=OIG2.Mg_FIsVADFVGEbDkoeFz&frame=sydedg&FORM=SYDBIC) for the icon
