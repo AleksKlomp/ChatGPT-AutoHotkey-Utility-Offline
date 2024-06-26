@@ -75,6 +75,7 @@ You can change the activation hotkey under Hotkey. See [here](https://www.autoho
 
 ## Credits
 
+- [kdalanon](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility) for the original ChatGPT-AutoHotkey-Utility script
 - [AutoHotkey-JSON](https://github.com/cocobelgica/AutoHotkey-JSON) library
 - [ai-tools-ahk](https://github.com/ecornell/ai-tools-ahk) for the inspiration
 - [Microsoft Copilot](https://www.bing.com/images/create/extremely-simple-graphic-of-the-writing-hand-emoji/1-667c7f1955cd40c68f0fc7032f3efaa5?id=twRLOcxSHp1iYCRcMv4ufw%3d%3d&view=detailv2&idpp=genimg&idpclose=1&thId=OIG2.Mg_FIsVADFVGEbDkoeFz&frame=sydedg&FORM=SYDBIC) for the icon
