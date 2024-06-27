@@ -6,6 +6,12 @@ An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, 
 
 ![GIF](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/8f02fe29-ebbe-49a8-9f3e-0c0fb23b18bf)
 
+## Added features
+- No internet connection required (just start a local HTTP server in LM Studio)
+- Use any LLM
+- Copy response text automatically into the Clipboard
+- Paste response text automatically into the edit field of any program
+
 ## How to use
 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/). Note that this script will not work on earlier versions of AutoHotkey.
@@ -17,7 +23,7 @@ An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, 
 7. OPTIONAL: Open `ChatGPT AutoHotkey Utility.ahk` using your favorite text editor
 8. OPTIONAL: Paste your OpenAI API key on the `API_Key` variable
 
-![image](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/a77d1a7d-628b-4155-83ba-2b5569442a50)
+![API Key](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/f8ad2e2f-0989-4b96-a61a-842cef92f2f2)
 
 5. Launch `ChatGPT AutoHotkey Utility.ahk`
 6. Highlight a text that you want to process using ChatGPT API and press the `back quote` key to bring up the menu
@@ -26,7 +32,7 @@ An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, 
 
 (Image from [emacs.stackexchange.com](https://emacs.stackexchange.com/questions/16749/how-to-set-emacs-to-recognize-backtick-and-tilde-with-a-colemak-keyboard-layout))
 
-## Customizing menu, prompts, APIs, and hotkey
+## Customizing menu, prompts, APIs, set timeouts and hotkey
 
 You can customize prompts and the menu order by doing the following:
 
@@ -64,6 +70,12 @@ Function_To_Execute_When_Selected(*) {
 You can edit the API used for each prompt by changing the `API_Model` under each prompt. Visit [this page](https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4) to explore a selection of available API models.
 
 ![76IxQa4](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/7bd23815-78d8-4629-b69b-7fcea3be5f28)
+
+### Set timeouts
+
+By default, HTTP_Request.SetTimeouts is set to a whopping 5 minutes. This is because LLMs will run slowly depending on your laptop specs. This will be different for everybody. You can play around with this number to suit your own needs.
+
+![SetTimeouts](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/df6a4e78-7d44-4280-9101-d4c4838ce419)
 
 ### Hotkey
 
