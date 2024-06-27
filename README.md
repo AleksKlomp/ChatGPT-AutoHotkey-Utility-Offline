@@ -9,6 +9,7 @@ An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, 
 ## Added features
 - No internet connection required (just start a local HTTP server in LM Studio)
 - Use any LLM
+- You can drag the GUI window to any location, or minimize it so it does not block the screen. Auto Copy-Paste will still work as intended.
 - Copy response text automatically into the Clipboard
 - Paste response text automatically into the edit field of any program
 
@@ -17,11 +18,13 @@ An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, 
 1. Install [AutoHotkey v2](https://www.autohotkey.com/). Note that this script will not work on earlier versions of AutoHotkey.
 2. Install [LM Studio for Windows](https://lmstudio.ai/).
 3. "Search" for any compatible model files that you can download in the app (e.g. lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF)
-4. Click on "Local Server" and "Select a model to load". (The server should now begin running on port 1234)
-   
-6. OPTIONAL: Copy your OpenAI API key [here](https://platform.openai.com/account/api-keys) (you may need to create a new secret key‍). Note that this is not needed if you do not intend to use ChatGPT.
-7. OPTIONAL: Open `ChatGPT AutoHotkey Utility.ahk` using your favorite text editor
-8. OPTIONAL: Paste your OpenAI API key on the `API_Key` variable
+![LM Studio](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/e2b5f76c-0714-49de-aa9b-55322d775af9)
+5. Click on "Local Server" and "Select a model to load". (The server should now begin running on port 1234)
+![LM Studio](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/8091df2b-f43d-49a0-88e1-9af2182ef6c8)
+
+7. OPTIONAL: Copy your OpenAI API key [here](https://platform.openai.com/account/api-keys) (you may need to create a new secret key‍). Note that this is not needed if you do not intend to use ChatGPT.
+8. OPTIONAL: Open `ChatGPT AutoHotkey Utility.ahk` using your favorite text editor
+9. OPTIONAL: Paste your OpenAI API key on the `OpenAI_API_Key` variable
 
 ![API Key](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/f8ad2e2f-0989-4b96-a61a-842cef92f2f2)
 
