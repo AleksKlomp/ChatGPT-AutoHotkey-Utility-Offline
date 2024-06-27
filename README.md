@@ -4,9 +4,7 @@
 
 An AutoHotkey v2 script that can use both the ChatGPT API as well as LM Studio, a program that enables you to run LLMs on your laptop, entirely offline. Process text using various language models through an OpenAI compatible local server that you can connect to without internet!
 
-![image](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/e5076d79-26ad-4680-83ee-032a6a805d40)
-
-![image](https://github.com/kdalanon/ChatGPT-AutoHotkey-Utility/assets/123705491/3b1349c8-619f-4cf9-b82f-2289845a4b71)
+![GIF](https://github.com/AleksKlomp/ChatGPT-AutoHotkey-Utility-Offline/assets/144496933/8f02fe29-ebbe-49a8-9f3e-0c0fb23b18bf)
 
 ## How to use
 
